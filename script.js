@@ -11,7 +11,7 @@ document.getElementById('addTaskBtn').addEventListener('click', function() {
             <span class="flex-grow-1">${taskText}</span>
             <div class="btn-group">
                 <button class="btn btn-warning btn-sm me-2" onclick="editTask(this)">Edit</button>
-                <button class="btn btn-danger btn-sm" onclick="removeTask(this)">Remove</button>
+                <button class="btn btn-danger btn-sm" onclick="removeTask(this)" id="delete">Remove</button>
             </div>
         `;
         taskList.appendChild(taskItem);
@@ -24,6 +24,29 @@ document.getElementById('addTaskBtn').addEventListener('click', function() {
 function removeTask(button) {
     let taskItem = button.parentElement.parentElement;
     taskItem.remove();
+}
+
+function removeTask(button) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let taskItem = button.parentElement.parentElement;
+            taskItem.remove();
+
+            Swal.fire(
+                'Deleted!',
+                'Your task has been deleted.',
+                'success'
+            );
+        }
+    });
 }
 
 function editTask(button) {
@@ -48,14 +71,17 @@ function saveTask(button) {
     let updatedText = taskTextElement.value.trim();
 
     if (updatedText !== "") {
-        // Replace the input field with the updated task text
         taskItem.querySelector('span').textContent = updatedText;
 
-        // Change the Save button back to an Edit button
         button.textContent = 'Edit';
         button.className = 'btn btn-warning btn-sm me-2';
         button.setAttribute('onclick', 'editTask(this)');
     } else {
-        alert("Please enter a task!");
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Please enter a task!'
+        });
     }
 }
+
